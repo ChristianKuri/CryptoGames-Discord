@@ -73,13 +73,6 @@ client.on('messageCreate', (msg) => {
 });
 
 client.on('messageCreate', (msg) => {
-    if (msg.content.toLowerCase() === '/team naranja') {
-        msg.member.roles.add('879906087464235009');
-        msg.reply('Ya eres team negro!');
-    }
-});
-
-client.on('messageCreate', (msg) => {
     if (msg.content.toLowerCase() === '/team marron') {
         msg.member.roles.add('879908348152127519');
         msg.reply('Ya eres team marron!');
