@@ -13,19 +13,19 @@ client.on('ready', () => {
 })
 
 client.on('messageCreate', msg => {
-    if (msg.content === PING_COMMAND) {
+    if (msg.content.toLowerCase() === PING_COMMAND) {
         msg.reply('Pong!')
     }
 })
 
 client.on('messageCreate', msg => {
-    if (msg.content === SUBSCRIBE_COMMAND) {
+    if (msg.content.toLowerCase() === SUBSCRIBE_COMMAND) {
         msg.member.roles.add("879849909744988190")
     }
 })
 
 client.on('messageCreate', msg => {
-    if (msg.content === 'los amo') {
+    if (msg.content.toLowerCase() === 'los amo') {
         msg.react('💖')
     }
 })
