@@ -82,7 +82,7 @@ client.on('messageCreate', (msg) => {
 client.on('messageCreate', (msg) => {
     if (msg.channelId == '873246262080712764') {
         msg.author.send(
-            'Recuerda que para ser considerado para una beca tienes que estar subscrito a nuestro canal de youtube. https://www.youtube.com/channel/UCX2r8s5WFMJFstBEEvYIkMQ'
+            'Recuerda que para ser considerado para una beca tienes que estar subscrito a nuestro canal de youtube. https://www.youtube.com/c/CryptoGamesMX'
         );
     }
 });
