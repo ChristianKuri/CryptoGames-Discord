@@ -6,7 +6,6 @@ const client = new Client({
 });
 
 const PING_COMMAND = 'ping';
-const SUBSCRIBE_COMMAND = '/subscribe';
 
 client.on('ready', () => {
     console.log('Our bot is ready!');
@@ -19,7 +18,17 @@ client.on('messageCreate', (msg) => {
 });
 
 client.on('messageCreate', (msg) => {
-    if (msg.content.toLowerCase() === SUBSCRIBE_COMMAND) {
+    if (msg.channelId == '873246262080712764') {
+        msg.author.send(
+            'Recuerda que para ser considerado para una beca tienes que estar subscrito a nuestro canal de youtube. https://www.youtube.com/c/CryptoGamesMX'
+        );
+    }
+});
+
+client.login(process.env.BOT_TOKEN);
+
+/* client.on('messageCreate', (msg) => {
+    if (msg.content.toLowerCase() === '/suscribe') {
         msg.member.roles.add('879849909744988190');
     }
 });
@@ -77,14 +86,4 @@ client.on('messageCreate', (msg) => {
         msg.member.roles.add('879908348152127519');
         msg.reply('Ya eres team marron!');
     }
-});
-
-client.on('messageCreate', (msg) => {
-    if (msg.channelId == '873246262080712764') {
-        msg.author.send(
-            'Recuerda que para ser considerado para una beca tienes que estar subscrito a nuestro canal de youtube. https://www.youtube.com/c/CryptoGamesMX'
-        );
-    }
-});
-
-client.login(process.env.BOT_TOKEN);
+}); */
