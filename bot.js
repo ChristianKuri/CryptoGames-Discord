@@ -19,7 +19,9 @@ client.on('messageCreate', (msg) => {
 
 client.on('messageCreate', (msg) => {
     if (msg.channelId == '873246262080712764') {
-        if (msg.member.roles.cache.some((role) => role.name === 'Suscriptor')) {
+        if (
+            !msg.member.roles.cache.some((role) => role.name === 'Suscriptor')
+        ) {
             msg.author.send({
                 content: `**Borramos tu mensaje del Canal 📚・becas・scholarships** 
                 Para ser considerado para una beca tienes que estar minimo con el rol de Suscriptor, para obtener tu rol tienes que hacer lo siguiente:
