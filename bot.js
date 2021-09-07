@@ -18,6 +18,18 @@ client.on('messageCreate', (msg) => {
 });
 
 client.on('messageCreate', (msg) => {
+    if (
+        msg.content.toLowerCase().includes('beca') &&
+        msg.author.id != '879841323727867974'
+    ) {
+        let channel = msg.guild.channels.cache
+            .get('878651279155548230')
+            .toString();
+        msg.reply(`Ve a ${channel} ahi puedes leer la informacion`);
+    }
+});
+
+client.on('messageCreate', (msg) => {
     if (msg.channelId == '873246262080712764') {
         if (
             !msg.member.roles.cache.some((role) => role.name === 'Suscriptor')
