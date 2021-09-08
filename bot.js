@@ -20,7 +20,7 @@ client.on('messageCreate', (msg) => {
 client.on('messageCreate', (msg) => {
     if (
         msg.content.toLowerCase().includes('beca') &&
-        msg.author.id != '879841323727867974' &&
+        !msg.member.roles.cache.some((role) => role.name === 'Dueño') &&
         !msg.member.roles.cache.some((role) => role.name === 'Moderador') &&
         !msg.member.roles.cache.some((role) => role.name === 'Pre Moderador')
     ) {
