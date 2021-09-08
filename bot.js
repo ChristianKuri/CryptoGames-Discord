@@ -56,6 +56,7 @@ client.login(process.env.BOT_TOKEN);
     if (msg.content.toLowerCase() === '/suscribe') {
         msg.member.roles.add('879849909744988190');
     }
+    
 });
 
 client.on('messageCreate', (msg) => {
