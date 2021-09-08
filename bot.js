@@ -20,7 +20,9 @@ client.on('messageCreate', (msg) => {
 client.on('messageCreate', (msg) => {
     if (
         msg.content.toLowerCase().includes('beca') &&
-        msg.author.id != '879841323727867974'
+        msg.author.id != '879841323727867974' &&
+        !msg.member.roles.cache.some((role) => role.name === 'Moderador') &&
+        !msg.member.roles.cache.some((role) => role.name === 'Pre Moderador')
     ) {
         let channel = msg.guild.channels.cache
             .get('878651279155548230')
