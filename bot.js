@@ -4,10 +4,11 @@ const { Client, Intents, Util } = require('discord.js');
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
+const FB = require('fb');
 
 client.db = require('quick.db');
 client.request = new (require('rss-parser'))();
-client.config = require('./config.js');
+const config = require('./config.js');
 
 /** My Commands */
 const PING_COMMAND = 'ping';
@@ -62,24 +63,39 @@ function youtube() {
     }
 
     setInterval(() => {
-        client.request.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${client.config.channel_id}`).then((data) => {
+        client.request.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${config.channel_id}`).then((data) => {
             if (client.db.fetch(`postedVideos`).includes(data.items[0].link)) return;
             else {
                 // Publish On discord
                 client.db.set(`videoData`, data.items[0]);
                 client.db.push('postedVideos', data.items[0].link);
                 let parsed = client.db.fetch(`videoData`);
-                let channel = client.channels.cache.get(client.config.channel);
+                let channel = client.channels.cache.get(config.channel);
                 if (!channel) return;
-                let message = client.config.messageTemplate
+                let message = config.messageTemplate
                     .replace(/{author}/g, parsed.author)
                     .replace(/{title}/g, Util.escapeMarkdown(parsed.title))
                     .replace(/{url}/g, parsed.link);
 
                 channel.send(message);
+
+                // Publish on facebook
+                let facebookMessage = config.messageTemplate
+                    .replace('@everyone, ', '')
+                    .replace(/{title}/g, Util.escapeMarkdown(parsed.title))
+                    .replace(/{url}/g, parsed.link)
+                    .replaceAll('*', '');
+
+                FB.setAccessToken(process.env.FACEBOOK_ACCESS_TOKEN);
+                FB.api(`/${config.facebook.page_id}/feed`, 'POST', { message: facebookMessage, link: parsed.link }, function (response) {
+                    if (response.error) {
+                        console.log('error occurred: ' + response.error);
+                        return;
+                    }
+                });
             }
         });
-    }, client.config.watchInterval);
+    }, config.watchInterval);
 }
 
 client.login(process.env.BOT_TOKEN);
