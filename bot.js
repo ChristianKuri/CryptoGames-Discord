@@ -1,14 +1,20 @@
 require('dotenv').config();
 
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, Util } = require('discord.js');
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
+client.db = require('quick.db');
+client.request = new (require('rss-parser'))();
+client.config = require('./config.js');
+
+/** My Commands */
 const PING_COMMAND = 'ping';
 
 client.on('ready', () => {
     console.log('Our bot is ready!');
+    youtube();
 });
 
 client.on('messageCreate', (msg) => {
@@ -24,18 +30,14 @@ client.on('messageCreate', (msg) => {
         !msg.member.roles.cache.some((role) => role.name === 'Moderador') &&
         !msg.member.roles.cache.some((role) => role.name === 'Pre Moderador')
     ) {
-        let channel = msg.guild.channels.cache
-            .get('878651279155548230')
-            .toString();
+        let channel = msg.guild.channels.cache.get('878651279155548230').toString();
         msg.reply(`Ve a ${channel} ahi puedes leer la informacion`);
     }
 });
 
 client.on('messageCreate', (msg) => {
     if (msg.channelId == '873246262080712764') {
-        if (
-            !msg.member.roles.cache.some((role) => role.name === 'Suscriptor')
-        ) {
+        if (!msg.member.roles.cache.some((role) => role.name === 'Suscriptor')) {
             msg.author.send({
                 content: `**Borramos tu mensaje del Canal 📚・becas・scholarships** 
                 Para ser considerado para una beca tienes que estar minimo con el rol de Suscriptor, para obtener tu rol tienes que hacer lo siguiente:
@@ -51,6 +53,34 @@ client.on('messageCreate', (msg) => {
         }
     }
 });
+
+/** Youtube Commands */
+
+function youtube() {
+    if (client.db.fetch(`postedVideos`) === null) {
+        client.db.set(`postedVideos`, []);
+    }
+
+    setInterval(() => {
+        client.request.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${client.config.channel_id}`).then((data) => {
+            if (client.db.fetch(`postedVideos`).includes(data.items[0].link)) return;
+            else {
+                // Publish On discord
+                client.db.set(`videoData`, data.items[0]);
+                client.db.push('postedVideos', data.items[0].link);
+                let parsed = client.db.fetch(`videoData`);
+                let channel = client.channels.cache.get(client.config.channel);
+                if (!channel) return;
+                let message = client.config.messageTemplate
+                    .replace(/{author}/g, parsed.author)
+                    .replace(/{title}/g, Util.escapeMarkdown(parsed.title))
+                    .replace(/{url}/g, parsed.link);
+
+                channel.send(message);
+            }
+        });
+    }, client.config.watchInterval);
+}
 
 client.login(process.env.BOT_TOKEN);
 
