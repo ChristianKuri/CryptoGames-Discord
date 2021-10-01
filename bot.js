@@ -10,6 +10,15 @@ client.db = require('quick.db');
 client.request = new (require('rss-parser'))();
 const config = require('./config.js');
 
+const { TwitterClient } = require('twitter-api-client');
+
+const twitterClient = new TwitterClient({
+    apiKey: process.env.TWITTER_API_KEY,
+    apiSecret: process.env.TWITTER_API_SECRET,
+    accessToken: process.env.TWITTER_ACCESS_TOKEN,
+    accessTokenSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+});
+
 /** My Commands */
 const PING_COMMAND = 'ping';
 
@@ -93,6 +102,24 @@ function youtube() {
                         return;
                     }
                 });
+
+                // Publish on Twitter
+                let twitterMessage = config.messageTemplate
+                    .replace('@everyone, ', '')
+                    .replace(/{title}/g, Util.escapeMarkdown(parsed.title))
+                    .replace(/{url}/g, parsed.link)
+                    .replaceAll('*', '');
+
+                twitterClient.tweets
+                    .statusesUpdate({
+                        status: twitterMessage,
+                    })
+                    .then((response) => {
+                        console.log('Tweeted!', response);
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
             }
         });
     }, config.watchInterval);
